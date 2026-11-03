@@ -136,7 +136,7 @@ input[type=file]{padding:8px;height:auto;background:#fbfffd}
           {% endif %}
         {% endwith %}
 
-        <form class="track-form" method="POST" action="/login-support" autocomplete="off">
+        <form class="track-form" method="POST" action="{{ url_for('auth.login_support') }}" autocomplete="off">
           {% if csrf_token is defined %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
           <input type="hidden" name="support_action" value="track">
           <div class="form-group"><label for="ticket_reference">Ticket Reference</label><input id="ticket_reference" name="ticket_reference" type="text" placeholder="PGMIS-20261006-ABC123" maxlength="40" required></div>
@@ -158,7 +158,7 @@ input[type=file]{padding:8px;height:auto;background:#fbfffd}
         <h2>Raise Login Support Ticket</h2>
         <p class="sub">Give enough information for the support team to identify your account and resolve the problem quickly. Never enter your password in this form.</p>
 
-        <form method="POST" action="/login-support" enctype="multipart/form-data" autocomplete="on">
+        <form method="POST" action="{{ url_for('auth.login_support') }}" enctype="multipart/form-data" autocomplete="on">
           {% if csrf_token is defined %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
           <input type="hidden" name="support_action" value="create">
           <div class="form-grid">

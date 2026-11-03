@@ -1,0 +1,1156 @@
+{
+  "version": "1.0",
+  "effective_date": "06 October 2026",
+  "description": "This Privacy Policy explains how information is collected, used, accessed, stored, shared and protected when PG MIS is used through its web portal, companion mobile application, APIs and authorised administrative workflows.",
+  "intro": [
+    {
+      "text": "Purpose of this document:",
+      "bold": true
+    },
+    {
+      "text": " PG MIS is an institutional management information system. It contains project, beneficiary/member, operational and financial records that may be confidential or sensitive. This policy is intended to be made available from the PG MIS login screen and should be read by every authorised user.",
+      "bold": false
+    }
+  ],
+  "content_labels": [
+    "1. About PG MIS & Scope",
+    "2. Who is Responsible",
+    "3. Information Collected",
+    "4. Information Sources",
+    "5. Why Information is Used",
+    "6. Authority & Lawful Processing",
+    "7. Access, Visibility & Sharing",
+    "8. No Sale / Advertising",
+    "9. Permissions",
+    "10. Sessions & Authentication",
+    "11. Retention & Deletion",
+    "12. Data Security",
+    "13. Accuracy & Correction",
+    "14. Privacy Rights",
+    "15. Children / Minors",
+    "16. Third-Party Infrastructure",
+    "17. Breach & Incident Handling",
+    "18. User Responsibilities",
+    "19. Policy Changes",
+    "20. Privacy Contact",
+    "21. Data Handling Summary",
+    "22. Login-Screen Notice",
+    "23. Policy Status"
+  ],
+  "sections": [
+    {
+      "id": "s1",
+      "title": "1. About PG MIS and Scope of this Policy",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS (Producer Group Management Information System) is designed to support the authorised administration, monitoring, validation and reporting of Producer Groups (PGs), Self-Help Groups (SHGs), members, community cadres, financial activities, meetings, registers, grants, loans, business activity, stock, performance indicators and related programme operations.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "This Privacy Policy applies to information processed through the PG MIS web application, companion mobile application, API services, administrative interfaces, imported master datasets, uploaded documents and reports generated from the system. It applies to authorised users such as project administrators, state/district/block users, CLF users, community cadres, PG data-entry users and other roles configured by the responsible implementing organisation.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "This policy does not convert confidential project information into public information. Access remains subject to role, hierarchy, assignment, approval status and other access-control rules within PG MIS.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "2. Who is Responsible for the Data",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "For each deployment of PG MIS, the organisation or programme authority that determines why and how project data is processed is the responsible data controller/data fiduciary for that deployment. Technical administrators, developers, hosting providers and other service providers process information only to the extent required to operate, secure, maintain or support the system under authorised instructions.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Where PG MIS is used by multiple authorised organisations within a programme hierarchy, responsibilities may be shared according to programme rules, contracts, government directions or other lawful arrangements. Users should contact their designated PG MIS Project Administrator for the identity and contact details of the responsible organisation for their deployment.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "warning": false,
+          "runs": [
+            {
+              "text": "Privacy principle:",
+              "bold": true
+            },
+            {
+              "text": " PG MIS should collect and use only the information necessary for authorised programme and MIS purposes. Users must not upload unrelated personal information, and must not access records outside their assigned role or scope.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "3. Information PG MIS May Collect or Process",
+      "blocks": [
+        {
+          "type": "subheading",
+          "text": "3.1 User account and authentication information"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Account details: username, full name, email address, phone number, user role, account status and assigned organisational scope.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Hierarchy and assignment data: state, district, block, CLF, PG and assigned PG identifiers needed to restrict access and route work to the correct users.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Authentication records: password hashes, login/session information, authentication tokens used by the mobile/API workflow, last-login or similar access records where maintained.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.2 Community cadre registration and profile information"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Identity/contact data: full name, email address, phone number, cadre type and account details.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Banking data: bank name, account number, account holder/name, IFSC code and branch name where required for authorised project administration.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Identity document: an Aadhaar card image/PDF may be uploaded for community cadre registration or profile verification where that feature is enabled and the responsible organisation is authorised to collect it.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Approval information: registration status, profile validation status, approver/reviewer identity, reasons/remarks and timestamps.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS does not use Aadhaar for biometric authentication. Users should not upload Aadhaar or another government identity document unless the specific workflow requires it and their organisation has authorised the collection.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.3 PG, SHG and member information"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "PG/SHG details: PG/SHG name, codes, geographic hierarchy, Gram Panchayat, village, sector, formation/registration details, office-bearer information, aggregation-centre details and organisational bank information where entered.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Member identity data: member code, member name, designation, contact number and Father/Mother/Spouse name.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Demographic and programme data: social category, religion, education, disability indicator, head-of-family indicator and other programme attributes imported from or linked to authorised TRESP/SHG master data.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Member participation data: SHG linkage, PG designation, membership fee, sector/activity/crop information, FFS module, Lakhpati-related programme status and other authorised programme classifications.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Member banking information: bank name, branch and account number where recorded for authorised programme/financial workflows.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.4 Financial, business and operational records"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Financial records: PG/member loans, loan accounts and repayments, grants and utilisation, funds, cashbook entries, receipt vouchers, income and expenditure and related balances.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Business and market activity: monthly business values, internal/member transactions, market transactions, commodities, purchases/sales and business-plan information.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Inventory/asset records: input register, output register, stock register, asset register, ledger book and monthly/period records.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Monitoring data: MPR records, gradation, KPI/analytics values, submissions, period locks, validation status and report filters/outputs.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.5 Meeting, attendance and signature information"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Meeting records: meeting date/type, agenda, deliberations, decisions/resolutions, attendance and members-present information.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Signatures and images: where the user chooses to use signature features, PG MIS may store a drawn signature or an image captured/uploaded as a signature/evidence record.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Camera use: the browser/device camera is requested only when an authorised user selects a capture function. PG MIS does not require continuous camera access for normal login or navigation.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.6 Documents and attachments"
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Users may upload documents, bills, photos, grant-utilisation attachments, registration documents or other files required by specific workflows. File names, upload timestamps, uploader identity and related record references may also be retained. Uploaded files should contain only information needed for the relevant PG MIS function.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "subheading",
+          "text": "3.7 System-generated, security and audit information"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Audit trails: action, affected collection/record, user ID, username, role, before/after values where logged, timestamps and related metadata.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Workflow history: submission, approval/rejection, validation, change-request, notification and period-lock records.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Technical information: server/application logs and request/security information that may be generated by the hosting, application or network environment for troubleshooting, fraud prevention, availability and security.",
+                "bold": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "4. Where the Information Comes From",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS may obtain information from the following authorised sources:",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Information entered directly by authorised users through web or mobile forms.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Information supplied by community cadres, PG office bearers or members for authorised programme purposes.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "TRESP/SHG/member master datasets imported by authorised administrators.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Records created by PG MIS as users submit, validate, approve, reject, update or report programme activity.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Documents or images intentionally uploaded or captured by authorised users.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Existing programme records migrated into PG MIS under the authority of the responsible organisation.",
+                "bold": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "5. Why PG MIS Uses the Information",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS processes information only for legitimate and authorised MIS/programme purposes, including:",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Creating and administering secure user accounts and role-based access.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Registering and managing PGs, SHGs, members, community cadres and organisational hierarchies.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Validating registrations, profile changes, member records and other controlled submissions.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Maintaining financial, loan, grant, cashbook, receipt, stock, asset, ledger, business and market records.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Recording meetings, attendance, signatures and resolutions where required for programme documentation.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Preparing dashboards, MPRs, KPI views, gradation, analytics, summaries, exports and authorised reports.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Supporting programme monitoring, supervision, audit, reconciliation, verification and decision-making.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Providing alerts, notifications, workflow status and operational reminders.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Detecting misuse, investigating errors, protecting accounts, maintaining auditability and securing the service.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Complying with applicable legal, regulatory, contractual, audit or programme-record obligations.",
+                "bold": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "6. Authority and Lawful Processing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Information is processed because it is necessary for authorised PG MIS programme functions, institutional administration, implementation of project responsibilities, compliance with applicable requirements, and/or other lawful grounds available to the responsible organisation. Where applicable law requires consent or a specific notice for a particular category of data or feature, the responsible organisation must obtain or provide it separately and appropriately.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Signing in to PG MIS acknowledges that the user has been informed of this Privacy Policy. Login itself should not be treated as a substitute for consent where the law requires explicit consent for a particular activity.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "7. Role-Based Access, Visibility and Sharing",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS is designed around role-based and hierarchy-based access. A user should see only the information necessary for their assigned responsibilities. Access may depend on the user role, state/district/block/CLF/PG mapping, assigned PGs, workflow status and administrative permissions.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Information may be disclosed or made available only to the extent necessary to:",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Authorised project personnel:",
+                "bold": true
+              },
+              {
+                "text": " administrators, validators, programme staff, CLF/PG/cadre users and other authorised roles who need the information for their official work.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Service providers:",
+                "bold": true
+              },
+              {
+                "text": " approved hosting, database, backup, security, communications or technical-support providers acting under authorised instructions and appropriate confidentiality/security obligations.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Auditors, regulators or lawful authorities:",
+                "bold": true
+              },
+              {
+                "text": " where disclosure is required by law, audit mandate, court/authority direction, contractual obligation or authorised programme governance.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Authorised reporting recipients:",
+                "bold": true
+              },
+              {
+                "text": " where reports, exports or aggregated results are required for programme monitoring, management or official reporting.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS information must not be copied, exported, forwarded or disclosed by users for personal, commercial or unrelated purposes.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s8",
+      "title": "8. No Sale of Personal Data and No Advertising Use",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS is an institutional MIS, not an advertising platform. Personal and programme data processed by PG MIS is not intended to be sold, rented or traded, and is not used to build advertising profiles or serve behavioural advertisements. Any future material change to this position would require an updated privacy notice before such processing begins.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "title": "9. Camera, File and Device Permissions",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Certain functions may request access to device capabilities only when the user initiates the relevant action. For example, the meeting/signature workflow may allow an authorised user to capture, upload or draw a signature image; grant or verification workflows may allow attachments to be selected from the device.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "Camera access is used only for the capture action selected by the user and is not intended for continuous monitoring.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "File/photo access is used to select and upload documents or images required by the chosen workflow.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "A user may deny a permission; however, the specific capture/upload feature may not function until the required permission is granted.",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "Users must verify that they are authorised to capture or upload the information of another person before doing so.",
+                "bold": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s10",
+      "title": "10. Sessions, Authentication Tokens and Cookies",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "The web application may use essential session/authentication cookies or equivalent session mechanisms to keep an authorised user signed in and to maintain role/PG context. The mobile/API workflow may use authentication tokens for secure access. These mechanisms are used for service functionality and security, not for advertising tracking.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Users should sign out after using shared devices, protect their credentials and prevent unauthorised persons from accessing an active session.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s11",
+      "title": "11. Data Retention and Deletion",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS retains information for as long as reasonably necessary for the authorised programme purpose, account administration, reporting, validation history, financial/audit requirements, dispute resolution, security, backup and any applicable legal or contractual record-retention obligations.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Because PG MIS contains institutional records, a user may not always have the right to erase a record immediately. Some records may need to remain in audit trails, financial registers, official reports, backups or historical programme records. Where deletion is permitted, the responsible organisation should securely delete or anonymise the information when it is no longer required.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "If a deployment requires a specific retention schedule (for example, a defined number of years for financial or programme documents), that schedule should be approved by the responsible organisation and applied in addition to this policy.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s12",
+      "title": "12. Data Security",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS uses and should maintain reasonable administrative, technical and organisational safeguards appropriate to the nature of the information. Current system controls include authenticated access, password hashing, role/hierarchy restrictions, workflow approvals, audit logging and controlled document access. Production deployments should also use secure transport (HTTPS/TLS), secure secrets/configuration, server and database access controls, regular updates, backups and monitoring.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "No system can guarantee absolute security. Users must promptly report suspected account compromise, unauthorised access, accidental disclosure, lost credentials or other security incidents to the PG MIS Project Administrator.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s13",
+      "title": "13. Data Accuracy and Correction",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Authorised users should ensure that information entered into PG MIS is accurate, relevant and current. Some records are controlled by validation or approval workflows, and changes may require review by a Block Admin, other validator or authorised administrator.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "A person who believes that their information is inaccurate should contact the relevant PG MIS user/administrator responsible for the record. The administrator may correct the record directly, route the correction through a change/validation workflow, or retain an audit history of the change where necessary.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s14",
+      "title": "14. Privacy Rights and Requests",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Subject to applicable law, programme rules and legitimate record-retention requirements, a person may request appropriate assistance concerning personal information held in PG MIS. Depending on the circumstances, this may include requesting:",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "confirmation of whether relevant personal information is held in PG MIS;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "access to or an explanation of relevant personal information;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "correction or updating of inaccurate or incomplete information;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "deletion, restriction or withdrawal from optional processing where legally and operationally permitted;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "information about authorised recipients or categories of recipients, where applicable;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "review of a privacy concern or grievance.",
+                "bold": false
+              }
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Requests should be made through the designated PG MIS Project Administrator or the responsible implementing organisation. The requester may be asked to verify identity and the relevant PG/SHG/member/account context before information is disclosed or changed.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s15",
+      "title": "15. Information About Children or Minors",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS is an institutional programme system and is not designed as a consumer service for children. If a programme is authorised to record information relating to a minor, the responsible organisation must ensure that the collection is lawful, necessary for the programme and subject to any consent/guardian and protection requirements that apply. Users must not independently enter a child's information for an unrelated purpose.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s16",
+      "title": "16. Third-Party Infrastructure and Service Providers",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "PG MIS may be deployed using third-party infrastructure or technical services selected by the responsible organisation, such as cloud/server hosting, database infrastructure, backup, email/notification delivery, security or technical-support services. Such providers should receive only the information necessary for their service and should be subject to appropriate contractual, confidentiality and security safeguards.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "The exact infrastructure may differ between deployments. If data is processed outside the country or region in which it was collected, the responsible organisation should ensure that the transfer is permitted and appropriately protected under applicable requirements.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s17",
+      "title": "17. Data Breach and Incident Handling",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "If a suspected personal-data breach or unauthorised disclosure occurs, the responsible organisation should investigate promptly, contain the incident, preserve relevant logs/evidence, assess affected information and persons, remediate the cause, and provide notifications to affected persons or authorities where required by applicable law or programme policy.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s18",
+      "title": "18. User Responsibilities and Acceptable Handling",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Every authorised PG MIS user is responsible for protecting the information available through their account. Users must:",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "bullets",
+          "items": [
+            [
+              {
+                "text": "keep usernames, passwords and authentication tokens confidential;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "use PG MIS only for authorised official/project work;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "avoid downloading or sharing confidential data unless required for an authorised task;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "avoid storing exported files on unsecured or shared devices;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "verify that documents, photos, Aadhaar copies, bank details and signatures are necessary and authorised before uploading;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "report lost devices, suspected credential compromise or accidental disclosure promptly;",
+                "bold": false
+              }
+            ],
+            [
+              {
+                "text": "follow organisational confidentiality, records-management and information-security instructions in addition to this policy.",
+                "bold": false
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s19",
+      "title": "19. Changes to this Privacy Policy",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "This policy may be updated when PG MIS functionality, data collection, legal requirements, hosting arrangements or programme processes materially change. The updated version should display a new effective date/version and should be made available from the login screen or another prominent location before or when the change takes effect.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Material new processing should not be hidden within an existing policy. If a future PG MIS release introduces new sensitive data categories, continuous device/location access, new external integrations, advertising, or a materially different sharing arrangement, the privacy notice should be reviewed and updated before release.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s20",
+      "title": "20. Privacy Contact and Grievance Route",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "For questions, access/correction requests, complaints or suspected misuse of personal information, contact the designated PG MIS Project Administrator or the responsible implementing organisation using the official support/contact details provided with your PG MIS deployment.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "When submitting a privacy request, provide enough information to identify the relevant account or record (for example, username, PG/SHG/member reference and the nature of the request) but do not send passwords, full bank account details, Aadhaar copies or other unnecessary sensitive information by ordinary email or messaging services.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "warning": true,
+          "runs": [
+            {
+              "text": "Recommended deployment action:",
+              "bold": true
+            },
+            {
+              "text": " Before publishing this policy, the organisation operating PG MIS should place its official organisation name, privacy/grievance contact and support channel on the login screen or in the policy link area. Those deployment-specific details can be added without changing the substantive privacy terms above.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s21",
+      "title": "21. Data Handling Summary",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Data category",
+            "Examples in PG MIS",
+            "Primary purpose",
+            "Typical access"
+          ],
+          "rows": [
+            [
+              "Account & role",
+              "Username, name, email/phone, role, hierarchy, assignments",
+              "Authentication, RBAC, workflow routing",
+              "Authorised admins and role-scoped users"
+            ],
+            [
+              "Cadre identity",
+              "Contact details, cadre type, Aadhaar upload, approval status",
+              "Registration, verification, programme administration",
+              "Cadre, authorised Block/Admin reviewers"
+            ],
+            [
+              "Bank data",
+              "Bank, branch, account no., account name, IFSC",
+              "Authorised project/financial administration",
+              "Role-scoped finance/admin users as required"
+            ],
+            [
+              "SHG/PG member",
+              "Names, codes, family relation, contact, SHG/PG linkage",
+              "Membership, programme delivery and reporting",
+              "Assigned PG/CLF/Block and authorised higher roles"
+            ],
+            [
+              "Demographic",
+              "Social category, religion, education, disability, head-of-family",
+              "Authorised TRESP/programme analysis and monitoring",
+              "Strictly authorised role-scoped users/reports"
+            ],
+            [
+              "Financial",
+              "Loans, repayments, grants, cashbook, receipts, income/expenditure",
+              "Financial management, audit and reporting",
+              "PG/finance/admin/validator roles as configured"
+            ],
+            [
+              "Operations",
+              "Input/output/stock/assets/ledger/business/market records",
+              "MIS operations, monitoring, KPIs",
+              "Role-scoped project users"
+            ],
+            [
+              "Meetings & signatures",
+              "Agenda, deliberations, attendance, signature image",
+              "Official meeting/minute and evidence records",
+              "PG and authorised supervisory roles"
+            ],
+            [
+              "Attachments",
+              "Bills, photos, registration/verification documents",
+              "Evidence, validation and grant/record support",
+              "Authorised users for the linked record"
+            ],
+            [
+              "Audit & security",
+              "User/action, timestamps, before/after values, logs",
+              "Accountability, troubleshooting and security",
+              "Authorised administrators/auditors/support"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Actual visibility is controlled by the user role, hierarchy, assignment, validation status and permissions configured in PG MIS.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s22",
+      "title": "22. Recommended Login-Screen Privacy Notice",
+      "blocks": [
+        {
+          "type": "callout",
+          "warning": false,
+          "runs": [
+            {
+              "text": "Privacy:",
+              "bold": true
+            },
+            {
+              "text": " PG MIS processes authorised account, PG/SHG/member, programme, financial and uploaded-document information to operate the MIS and provide role-based reporting and validation. By signing in, you acknowledge that you have read the PG MIS Privacy Policy. Do not access, upload or share information unless you are authorised to do so.",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Recommended link label:",
+              "bold": true
+            },
+            {
+              "text": " “Privacy Policy”",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Recommended behaviour:",
+              "bold": true
+            },
+            {
+              "text": " open this policy in a new browser tab or in-app document viewer so the user can read it before signing in.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s23",
+      "title": "23. Policy Status",
+      "blocks": [
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "Version:",
+              "bold": true
+            },
+            {
+              "text": " 1.0",
+              "bold": false
+            },
+            {
+              "text": "\n",
+              "bold": false
+            },
+            {
+              "text": "Effective date:",
+              "bold": true
+            },
+            {
+              "text": " 06 October 2026",
+              "bold": false
+            },
+            {
+              "text": "\n",
+              "bold": false
+            },
+            {
+              "text": "Applies to:",
+              "bold": true
+            },
+            {
+              "text": " PG MIS - Producer Group Management Information System (web portal, companion mobile application, API and authorised administrative workflows).",
+              "bold": false
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "runs": [
+            {
+              "text": "This document is intended as the operational privacy notice for the PG MIS project. Deployment-specific operator/contact details and any legally mandated local notices should be added by the responsible implementing organisation before final public publication.",
+              "bold": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

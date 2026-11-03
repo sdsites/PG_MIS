@@ -14,6 +14,9 @@ from ..constants import ROLES
 
 auth_bp = Blueprint("auth", __name__, template_folder="../templates")
 
+from .public_support import register_public_support, handle_web_login_support
+register_public_support(auth_bp)
+
 CADRE_TYPE_OPTIONS = [
     "Pashu Sakhi",
     "Matshya Sakhi",
@@ -181,7 +184,8 @@ def privacy_policy():
 
 @auth_bp.route("/login-support", methods=["GET", "POST"])
 def login_support():
-    return render_template("login_support.html")
+    return handle_web_login_support()
+    
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
