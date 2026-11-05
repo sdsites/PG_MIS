@@ -1,0 +1,73 @@
+{% extends "base_default.html" %}
+{% block title %}{{ ticket.reference }} · PG MIS Support{% endblock %}
+{% block head_extra %}
+<style>
+.pg-ticket{--hd-accent:#0a7449;--hd-ink:#183b2b;--hd-muted:#64776b;--hd-line:#dce9df;max-width:1280px;padding:18px 8px 35px;color:var(--hd-ink);font-family:Inter,system-ui,sans-serif}
+.pg-ticket .tk-back{color:#0a7449;font-weight:800;font-size:12px;text-decoration:none;display:inline-flex;gap:8px;align-items:center;margin-bottom:17px}
+.pg-ticket h1{font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;color:var(--hd-ink);font-weight:800;margin:4px 0 7px;overflow-wrap:anywhere}
+.pg-ticket .tk-overline{color:#097047;text-transform:uppercase;letter-spacing:.12em;font-weight:800;font-size:11px}
+.pg-ticket .tk-muted{color:var(--hd-muted);font-size:12px;line-height:1.5}.pg-ticket .tk-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.75fr);gap:18px;margin-top:24px;align-items:start}
+.pg-ticket .tk-card{border:1px solid var(--hd-line);border-radius:17px;padding:23px;background:#fff;box-shadow:0 8px 23px rgba(14,66,42,.025);margin-bottom:17px;min-width:0}
+.pg-ticket .tk-card h2{margin:0 0 20px;font-size:17px;font-weight:800;color:var(--hd-ink)}.pg-ticket .tk-card h3{font-size:12px;font-weight:800;margin:20px 0 8px;color:#25503a}
+.pg-ticket .tk-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px;padding:0 0 5px}
+.pg-ticket .tk-meta-label{display:block;font-size:11px;font-weight:750;color:var(--hd-muted);margin-bottom:5px}.pg-ticket .tk-meta-value{font-size:13px;font-weight:700;overflow-wrap:anywhere;color:var(--hd-ink)}
+.pg-ticket .tk-description{border-radius:12px;background:#f6faf7;border:1px solid #e4eee7;padding:15px;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.pg-ticket .tk-file{padding:9px 0;border-bottom:1px solid #edf4ef;overflow-wrap:anywhere;font-size:12px}.pg-ticket .tk-file a{color:#0a7449;font-weight:800;text-decoration:none}
+.pg-ticket .tk-history{padding:13px 0;border-top:1px solid #edf2ee;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6}.pg-ticket .tk-history strong{color:#17633f}.pg-ticket .tk-history small{display:block;font-size:11px;color:var(--hd-muted);margin:3px 0 6px}
+.pg-ticket .tk-field{margin:0 0 17px}.pg-ticket .tk-field label{display:block;margin-bottom:7px;color:#274b3b;font-size:12px;font-weight:800}.pg-ticket .tk-field select,.pg-ticket .tk-field textarea{width:100%;border:1px solid #cfe1d6;border-radius:10px;background:#fbfdfb;min-height:44px;padding:12px;font:inherit;color:var(--hd-ink);font-size:13px}.pg-ticket .tk-field textarea{min-height:140px;resize:vertical;line-height:1.6}
+.pg-ticket .tk-save{border:0;background:#0a7449;color:#fff;border-radius:10px;min-height:47px;padding:12px 17px;width:100%;font-weight:800;font-size:13px;cursor:pointer}.pg-ticket .tk-save:hover{background:#075b38}
+.pg-ticket .tk-note{font-size:11px;line-height:1.5;color:#6a8072;margin-top:6px}.pg-ticket .tk-badge{display:inline-flex;align-items:center;border-radius:99px;font-size:11px;font-weight:800;background:#e9f7ef;color:#1c7850;padding:6px 10px;margin-left:9px}
+@media(max-width:900px){.pg-ticket .tk-layout{grid-template-columns:1fr}}
+@media(max-width:540px){.pg-ticket{padding:9px 0 22px}.pg-ticket .tk-card{padding:17px}.pg-ticket .tk-meta{grid-template-columns:1fr 1fr;gap:15px 9px}}
+</style>
+{% endblock %}
+{% block content %}
+<article class="pg-ticket">
+  <a href="{{ url_for('auth.support_tickets_admin') }}" class="tk-back">← Back to all support tickets</a>
+  <div class="tk-overline">PG MIS · Support ticket detail</div>
+  <h1>{{ ticket.subject or ticket.problem_type }} <span class="tk-badge">{{ ticket.status or 'Open' }}</span></h1>
+  <p class="tk-muted">{{ ticket.reference }} · Submitted {{ ticket.created_at.strftime('%d %b %Y, %I:%M %p') if ticket.created_at else '—' }}</p>
+  <div class="tk-layout">
+    <div>
+      <section class="tk-card">
+        <h2>Request details</h2>
+        <div class="tk-meta">
+          <div><span class="tk-meta-label">Name</span><span class="tk-meta-value">{{ ticket.name or '—' }}</span></div>
+          <div><span class="tk-meta-label">Mobile number</span><span class="tk-meta-value">{{ ticket.mobile or '—' }}</span></div>
+          <div><span class="tk-meta-label">Email</span><span class="tk-meta-value">{{ ticket.email or 'Not provided' }}</span></div>
+          <div><span class="tk-meta-label">Account type</span><span class="tk-meta-value">{{ ticket.account_type or 'Not specified' }}</span></div>
+          <div><span class="tk-meta-label">Username / ID</span><span class="tk-meta-value">{{ ticket.username or 'Not provided' }}</span></div>
+          <div><span class="tk-meta-label">Source</span><span class="tk-meta-value">{{ ticket.source or 'Web / app' }}</span></div>
+        </div>
+        <h3>Issue description</h3>
+        <div class="tk-description">{{ ticket.details or 'No description provided.' }}</div>
+        {% if ticket.attachments %}
+          <h3>Attachments</h3>
+          {% for file in ticket.attachments %}
+            <div class="tk-file"><a href="{{ url_for('auth.support_ticket_attachment_admin', reference=ticket.reference, stored_name=file.stored_name) }}">↓ {{ file.name }}</a> <span class="tk-muted">({{ (file.size / 1024)|round|int }} KB)</span></div>
+          {% endfor %}
+        {% endif %}
+      </section>
+      <section class="tk-card">
+        <h2>Conversation history</h2>
+        {% for entry in ticket.history or [] %}
+          <div class="tk-history"><strong>{{ entry.author }}</strong><small>{{ entry.at }}</small>{{ entry.message }}</div>
+        {% else %}<p class="tk-muted">No updates yet.</p>{% endfor %}
+      </section>
+    </div>
+    <div>
+      <section class="tk-card">
+        <h2>Manage ticket</h2>
+        <form method="POST" action="{{ url_for('auth.support_ticket_update_admin', reference=ticket.reference) }}">
+          <input type="hidden" name="_support_csrf" value="{{ support_csrf }}">
+          {% if csrf_token is defined %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+          <div class="tk-field"><label for="support_status">Ticket status</label><select id="support_status" name="status">{% for status in statuses %}<option value="{{ status }}" {% if status == ticket.status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></div>
+          <div class="tk-field"><label for="support_priority">Priority</label><select id="support_priority" name="priority">{% for priority in priorities %}<option value="{{ priority }}" {% if priority == (ticket.priority or 'Normal') %}selected{% endif %}>{{ priority }}</option>{% endfor %}</select></div>
+          <div class="tk-field"><label for="support_reply">Reply to requester <span class="tk-muted">(optional)</span></label><textarea id="support_reply" name="reply" maxlength="2000" placeholder="Type a reply or request additional details..."></textarea><p class="tk-note">Your reply will be visible to the requester when they track this ticket.</p></div>
+          <button class="tk-save" type="submit">Save ticket update</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</article>
+{% endblock %}

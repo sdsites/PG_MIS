@@ -1,0 +1,84 @@
+{% extends "base_default.html" %}
+{% block title %}Support Tickets · PG MIS{% endblock %}
+{% block head_extra %}
+<style>
+.pg-helpdesk{--hd-accent:#0a7449;--hd-ink:#193a2c;--hd-muted:#64776d;--hd-border:#dce9e1;color:var(--hd-ink);padding:18px 8px 32px;font-family:Inter,system-ui,-apple-system,sans-serif}
+.pg-helpdesk .hd-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.pg-helpdesk .hd-eyebrow{display:inline-flex;align-items:center;gap:6px;color:var(--hd-accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:850}
+.pg-helpdesk h1{font-size:clamp(26px,3vw,36px);font-weight:800;letter-spacing:-.035em;color:var(--hd-ink);margin:5px 0}
+.pg-helpdesk .hd-sub{font-size:13px;line-height:1.6;color:var(--hd-muted);margin:5px 0 0}
+.pg-helpdesk .hd-back{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;background:#fff;border:1px solid var(--hd-border);border-radius:12px;color:#1a6040;text-decoration:none;font-size:12px;font-weight:750}
+.pg-helpdesk .hd-back:hover{background:#f0faf4}
+.pg-helpdesk .hd-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:20px 0 22px}
+.pg-helpdesk .hd-stat{display:flex;flex-direction:column;gap:8px;min-height:99px;background:#fff;border:1px solid var(--hd-border);border-radius:16px;padding:16px;text-decoration:none;transition:border-color .15s,transform .15s;box-shadow:0 7px 20px rgba(14,68,42,.025)}
+.pg-helpdesk .hd-stat:hover{border-color:#77b99a;transform:translateY(-2px)}
+.pg-helpdesk .hd-stat span{font-size:11px;font-weight:700;color:var(--hd-muted)}
+.pg-helpdesk .hd-stat strong{font-size:28px;line-height:1;color:var(--hd-ink);font-weight:800}
+.pg-helpdesk .hd-panel{background:#fff;border:1px solid var(--hd-border);border-radius:17px;overflow:hidden;box-shadow:0 8px 24px rgba(14,68,42,.025)}
+.pg-helpdesk .hd-filters{padding:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.pg-helpdesk .hd-filters input,.pg-helpdesk .hd-filters select{border:1px solid #cfe1d6;border-radius:10px;min-height:43px;background:#fff;padding:10px 12px;font:inherit;font-size:13px;color:var(--hd-ink)}
+.pg-helpdesk .hd-filters input{min-width:210px;flex:1 1 260px}.pg-helpdesk .hd-filters select{min-width:160px;flex:0 1 200px}
+.pg-helpdesk .hd-btn{display:inline-flex;align-items:center;justify-content:center;min-height:43px;border-radius:10px;padding:10px 19px;background:var(--hd-accent);border:1px solid var(--hd-accent);color:#fff;text-decoration:none;font-size:12px;font-weight:800;cursor:pointer}
+.pg-helpdesk .hd-btn:hover{background:#075b38;color:#fff}
+.pg-helpdesk .hd-reset{background:#f5faf7;color:#1b6041;border-color:var(--hd-border)}.pg-helpdesk .hd-reset:hover{background:#eaf6ee;color:#1b6041}
+.pg-helpdesk .hd-scroll{max-width:100%;overflow:auto}.pg-helpdesk .hd-table{width:100%;min-width:770px;border-collapse:collapse;font-size:12px}
+.pg-helpdesk .hd-table th{background:#f7fbf8;padding:13px 17px;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em;font-size:10px;color:#607368;font-weight:850;border-top:1px solid #edf3ee}
+.pg-helpdesk .hd-table td{padding:16px 17px;border-top:1px solid #edf3ee;vertical-align:middle;color:#25473a}
+.pg-helpdesk .hd-table td strong{font-weight:800}.pg-helpdesk .hd-table .hd-small{display:block;color:var(--hd-muted);font-size:11px;margin-top:3px}
+.pg-helpdesk .hd-table a{color:#096f45;text-decoration:none;font-weight:800}.pg-helpdesk .hd-table a:hover{text-decoration:underline}
+.pg-helpdesk .hd-pill{display:inline-flex;align-items:center;white-space:nowrap;border-radius:99px;padding:5px 10px;font-size:10px;font-weight:800;color:#27774d;background:#e8f6ed}
+.pg-helpdesk .hd-pill.closed{color:#67766d;background:#f0f2f1}.pg-helpdesk .hd-pill.urgent{color:#aa463d;background:#fff0ed}
+.pg-helpdesk .hd-empty{text-align:center;padding:42px!important;color:#7b8a80!important}.pg-helpdesk .hd-footnote{margin:12px 0;color:#7a8b7f;font-size:11px}
+@media(max-width:1050px){.pg-helpdesk .hd-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.pg-helpdesk{padding:8px 0 24px}.pg-helpdesk .hd-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pg-helpdesk .hd-stat{padding:13px;min-height:87px}.pg-helpdesk .hd-filters{padding:12px}.pg-helpdesk .hd-filters input,.pg-helpdesk .hd-filters select{flex:1 1 100%}}
+</style>
+{% endblock %}
+{% block content %}
+<section class="pg-helpdesk">
+  <div class="hd-head">
+    <div>
+      <div class="hd-eyebrow">PG MIS · Superadmin workspace</div>
+      <h1>Support Tickets</h1>
+      <p class="hd-sub">Manage support requests submitted through the PG MIS web portal and mobile application.</p>
+    </div>
+    <a class="hd-back" href="{{ url_for('reports.state_dashboard') }}">← Dashboard</a>
+  </div>
+  <div class="hd-stats">
+    {% for status, count in counts.items() %}
+    <a class="hd-stat" href="{{ url_for('auth.support_tickets_admin', status=status) }}" aria-label="View {{ status }} support tickets"><span>{{ status }}</span><strong>{{ count }}</strong></a>
+    {% endfor %}
+  </div>
+  <div class="hd-panel">
+    <form class="hd-filters" method="GET" action="{{ url_for('auth.support_tickets_admin') }}">
+      <input type="search" name="q" value="{{ search }}" placeholder="Search by ticket ID, name, mobile or issue" aria-label="Search support tickets">
+      <select name="status" aria-label="Filter by status">
+        <option value="">All statuses</option>
+        {% for status in statuses %}
+        <option value="{{ status }}" {% if status == selected_status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+      <button class="hd-btn" type="submit">Search tickets</button>
+      <a class="hd-btn hd-reset" href="{{ url_for('auth.support_tickets_admin') }}">Clear</a>
+    </form>
+    <div class="hd-scroll">
+      <table class="hd-table">
+        <thead><tr><th>Ticket ID</th><th>Requester</th><th>Issue</th><th>Priority</th><th>Status</th><th>Submitted</th><th></th></tr></thead>
+        <tbody>
+          {% for ticket in tickets %}
+          <tr>
+            <td><strong>{{ ticket.reference }}</strong></td>
+            <td><strong>{{ ticket.name }}</strong><span class="hd-small">{{ ticket.mobile }}</span></td>
+            <td><strong>{{ ticket.subject or ticket.problem_type }}</strong><span class="hd-small">{{ ticket.source or 'Web / app' }}</span></td>
+            <td><span class="hd-pill{% if ticket.priority == 'Urgent' %} urgent{% endif %}">{{ ticket.priority or 'Normal' }}</span></td>
+            <td><span class="hd-pill{% if ticket.status in ('Closed','Resolved') %} closed{% endif %}">{{ ticket.status or 'Open' }}</span></td>
+            <td>{{ ticket.created_at.strftime('%d %b %Y') if ticket.created_at else '—' }}</td>
+            <td><a href="{{ url_for('auth.support_ticket_detail_admin', reference=ticket.reference) }}">Manage →</a></td>
+          </tr>
+          {% else %}<tr><td colspan="7" class="hd-empty">No support tickets found for this filter.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="hd-footnote">Displaying the latest 200 matching tickets. Older tickets remain stored in MongoDB.</p>
+</section>
+{% endblock %}
