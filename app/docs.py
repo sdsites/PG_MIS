@@ -2,41 +2,72 @@ from flask import jsonify, render_template_string
 import re
 
 REDOC_HTML = """
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>PG MIS API Docs</title>
-    <meta charset="utf-8"/>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PG MIS API Documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700"
+          rel="stylesheet">
+
     <style>
-      body { margin: 0; padding: 0; }
-    </style>
-  </head>
-  <body>
-    <redoc
-      spec-url='/apispec.json'
-      expand-responses="200"
-      required-props-first="true"
-      hide-download-button="false"
-      theme='{
-        "colors": {
-          "primary": { "main": "#1a7f4b" }
-        },
-        "typography": {
-          "fontSize": "15px",
-          "fontFamily": "Roboto, sans-serif",
-          "headings": { "fontFamily": "Montserrat, sans-serif" }
-        },
-        "sidebar": {
-          "backgroundColor": "#1a1a2e",
-          "textColor": "#ffffff"
+        body {
+            margin: 0;
+            font-family: Roboto, sans-serif;
         }
-      }'>
-    </redoc>
-    <script src="https://cdn.jsdelivr.net/npm/redoc@latest/bundles/redoc.standalone.js"></script>
-  </body>
+
+        #redoc-container {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="redoc-container">Loading API documentation...</div>
+
+    <script src="/static/vendor/redoc.standalone.js"></script>
+
+    <script>
+        if (window.Redoc) {
+            Redoc.init(
+                "/apispec.json",
+                {
+                    expandResponses: "200",
+                    requiredPropsFirst: true,
+                    hideDownloadButton: false,
+                    theme: {
+                        colors: {
+                            primary: {
+                                main: "#1a7f4b"
+                            }
+                        },
+                        typography: {
+                            fontSize: "15px",
+                            fontFamily: "Roboto, sans-serif",
+                            headings: {
+                                fontFamily: "Montserrat, sans-serif"
+                            }
+                        },
+                        sidebar: {
+                            backgroundColor: "#1a1a2e",
+                            textColor: "#ffffff"
+                        }
+                    }
+                },
+                document.getElementById("redoc-container")
+            );
+        } else {
+            document.getElementById("redoc-container").innerText =
+                "ReDoc JavaScript failed to load.";
+        }
+    </script>
+
+</body>
 </html>
+
 """
 
 def build_spec(app):
