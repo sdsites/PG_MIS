@@ -177,6 +177,12 @@ def _redirect_after_login(role):
 # Public Login Pages
 # ------------------------------------------------------------
 
+@auth_bp.route("/about-us", methods=["GET"])
+def about_us():
+    """Public introduction to PG MIS; no sign-in required."""
+    return render_template("about_us.html")
+
+
 @auth_bp.route("/privacy-policy", methods=["GET"])
 def privacy_policy():
     return render_template("privacy_policy.html")

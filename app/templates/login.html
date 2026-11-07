@@ -2961,6 +2961,96 @@ body.has-flash .stage{
     .login-security-note{margin-top:14px;padding-top:12px}
   }
 
+  /* Public About Us link, paired with the existing Support shortcut. */
+  .login-about-link{
+    position:fixed;
+    top:calc(var(--safeTop) + 16px);
+    left:20px;
+    z-index:55;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 13px;
+    border-radius:999px;
+    text-decoration:none;
+    color:#1f573a;
+    background:rgba(255,255,255,.89);
+    border:1px solid rgba(13,111,69,.26);
+    box-shadow:0 8px 22px rgba(6,40,26,.08);
+    font-size:13px;
+    font-weight:750;
+    transition:background .16s ease,transform .16s ease;
+  }
+  .login-about-link svg{width:17px;height:17px;stroke:currentColor;fill:none;flex-shrink:0}
+  .login-about-link:hover{background:#fff;transform:translateY(-1px)}
+  .login-about-link:focus-visible{outline:3px solid rgba(13,111,69,.3);outline-offset:3px}
+  @media(max-width:720px){
+    .login-about-link{top:calc(var(--safeTop) + 10px);left:12px;padding:9px 12px;font-size:12px}
+  }
+
+
+/* Login page — fit within one screen */
+html,
+body {
+  height: 100%;
+  overflow: hidden !important;
+}
+
+body,
+.page-shell {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.stage,
+body.has-flash .stage {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  padding: clamp(60px, 9svh, 100px) 16px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden !important;
+}
+
+.fit-wrap {
+  width: 100%;
+  transform: scale(var(--fit)) !important;
+  transform-origin: center center;
+}
+
+/* Compact spacing on shorter screens */
+@media (max-height: 800px) {
+  .wrap { gap: 8px; }
+
+  .login-logo {
+    width: 58px;
+    height: 58px;
+  }
+
+  .header h1 { font-size: 32px; }
+
+  .card { padding: 20px 26px; }
+
+  .login-card-head { margin-bottom: 12px; }
+
+  .login-card-title {
+    font-size: 23px;
+    margin: 8px 0 5px;
+  }
+
+  .field { margin-bottom: 12px; }
+  .label { margin-bottom: 5px; }
+  .input { height: 45px; }
+  .btn { height: 48px; }
+
+  .login-security-note {
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+}
+
 </style>
 
 
@@ -3131,6 +3221,10 @@ body.has-flash .stage{
 
   <div class="page-shell">
 
+  <a class="login-about-link" href="{{ url_for('auth.about_us') }}" aria-label="Read About Us — PG MIS">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke-width="1.8"/><path d="M12 10.7v5.1M12 7.6h.01" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span>About Us</span>
+  </a>
   <a class="login-support-link" href="{{ url_for('auth.login_support') }}" aria-label="Open PG MIS Support">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M4 13v-1a8 8 0 0 1 16 0v1" stroke-width="1.8" stroke-linecap="round"/>
@@ -4192,7 +4286,7 @@ body.has-flash .stage{
 
 
 
-    scale = Math.max(0.72, scale);
+    scale = Math.max(0.45, scale);
 
 
 
