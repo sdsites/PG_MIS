@@ -1373,6 +1373,16 @@ transition:none !important;
 
             {% if session.get('role') == 'ADMIN' %}
             <li>
+              <a class="nav-item{% if request.endpoint in ['auth.super_admin_password_reset', 'auth.super_admin_user_edit'] %} active{% endif %}"
+                 data-page="reset-user-passwords" href="{{ url_for('auth.super_admin_password_reset') }}">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span class="nav-text">Users</span>
+              </a>
+            </li>
+            <li>
               <a class="nav-item" data-page="create-district-admin" href="{{ url_for('auth.create_district_admin') }}">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>

@@ -515,7 +515,7 @@
       </a>
 
       <h2 class="ued-title">Edit User</h2>
-      <div class="ued-subtitle">Manage password, account status and activity log for this user.</div>
+      <div class="ued-subtitle">{% if is_state_admin %}Reset the password for an authorized user in your state.{% else %}Manage password, account status and activity log for this user.{% endif %}</div>
     </div>
 
     <div class="ued-section">
@@ -564,7 +564,7 @@
         </div>
 
         <!-- Password Reset -->
-        <div class="ued-card half">
+        <div class="ued-card{% if not is_state_admin %} half{% endif %}">
           <div class="ued-card-head">
             <div>
               <h3 class="ued-card-title">New Password Reset</h3>
@@ -575,6 +575,7 @@
           <div class="ued-card-body">
             <form method="post" class="ued-form">
               <input type="hidden" name="action" value="reset_password">
+              {% if is_state_admin %}<input type="hidden" name="csrf_token" value="{{ password_reset_csrf_token }}">{% endif %}
 
              <div>
   <label class="ued-label">New Password</label>
@@ -623,7 +624,8 @@
           </div>
         </div>
 
-        <!-- Enable / Disable -->
+        {% if not is_state_admin %}
+        <!-- Enable / Disable is Super Admin only -->
         <div class="ued-card half">
           <div class="ued-card-head">
             <div>
@@ -667,6 +669,8 @@
             </div>
           </div>
         </div>
+
+        {% endif %}
 
         <!-- Activity Log Placeholder -->
         <div class="ued-card">

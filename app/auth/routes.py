@@ -1,9 +1,11 @@
 from services.audit_engine import AuditLogger
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify, send_file, abort
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify, send_file, abort, g
 from bson import ObjectId
 from datetime import datetime,timedelta
 import jwt
 import os
+import secrets
+import hmac
 from werkzeug.utils import secure_filename
 from ..utils import verify_password, hash_password, json_safe
 from ..rbac import login_required, roles_required
@@ -1372,8 +1374,70 @@ def create_pg_data_entry():
     return render_template("user_create_pg.html", pgs=pgs, title="Create PG Login")
 
 
+# State Admin password management: deny access unless role AND state match.
+# State IDs are stored as both strings and ObjectIds in existing PG MIS users.
+_STATE_PASSWORD_MANAGED_ROLES = (
+    "DISTRICT_ADMIN", "BLOCK_ADMIN", "CLF_ADMIN", "CLF_MANAGER",
+    "PG_DATA_ENTRY", "CADRE_CC", "CRCTA", "ANS", "CRCITARD",
+)
+
+
+def _user_password_management_scope(db):
+    """Return the DB filter the authenticated role is allowed to manage.
+
+    SUPER_ADMIN keeps the existing all-user behavior. State Admin can manage
+    only known subordinate roles within its own verified, nonempty state.
+    The state must come from the persisted admin record, not a URL/form field.
+    """
+    role = getattr(g, "role", None) or session.get("role")
+    if role == "SUPER_ADMIN":
+        return {}
+    if role != "ADMIN":
+        abort(403)
+
+    actor_id = _to_object_id(session.get("user_id"))
+    if not actor_id:
+        abort(403)
+    actor = db.users.find_one({"_id": actor_id, "role": "ADMIN"}, {"state_id": 1})
+    if not actor:
+        abort(403)
+
+    state_id = actor.get("state_id")
+    if state_id in (None, "", [], {}):
+        # Fail closed: an unassigned State Admin must not see global users.
+        abort(403)
+
+    state_values = [str(state_id)]
+    state_oid = _to_object_id(state_id)
+    if state_oid:
+        state_values.append(state_oid)
+
+    return {
+        "state_id": {"$in": state_values},
+        "role": {"$in": list(_STATE_PASSWORD_MANAGED_ROLES)},
+    }
+
+
+def _state_password_csrf_token():
+    """Create a per-session CSRF token for State Admin password reset forms."""
+    if session.get("role") == "ADMIN":
+        if not session.get("_state_password_csrf"):
+            session["_state_password_csrf"] = secrets.token_urlsafe(32)
+        return session["_state_password_csrf"]
+    return None
+
+
+def _verify_state_password_csrf():
+    if session.get("role") != "ADMIN":
+        return
+    expected = session.get("_state_password_csrf")
+    provided = request.form.get("csrf_token", "")
+    if not (expected and provided and hmac.compare_digest(expected, provided)):
+        abort(403)
+
+
 @auth_bp.route("/users/password-reset", methods=["GET", "POST"])
-@roles_required("SUPER_ADMIN")
+@roles_required("SUPER_ADMIN", "ADMIN")
 def super_admin_password_reset():
     """
     SUPER_ADMIN Users panel.
@@ -1386,6 +1450,12 @@ def super_admin_password_reset():
     Existing endpoint name kept same so old menu url_for('auth.super_admin_password_reset') does not break.
     """
     db = current_app.mongo_db
+    scope = _user_password_management_scope(db)
+
+    # The legacy direct POST was only built for Super Admin. State Admin
+    # must use the scoped edit route with CSRF validation instead.
+    if request.method == "POST" and session.get("role") == "ADMIN":
+        abort(403)
 
     # Keep backward compatibility: if any old form still posts here, reset password safely.
     if request.method == "POST":
@@ -1423,7 +1493,7 @@ def super_admin_password_reset():
     
 
     users = list(db.users.find(
-        {},
+        scope,
         {
             "username": 1,
             "role": 1,
@@ -1456,7 +1526,7 @@ def super_admin_password_reset():
 
 
 @auth_bp.route("/users/password-reset/<user_id>/edit", methods=["GET", "POST"])
-@roles_required("SUPER_ADMIN")
+@roles_required("SUPER_ADMIN", "ADMIN")
 def super_admin_user_edit(user_id):
     """
     SUPER_ADMIN user edit page.
@@ -1469,6 +1539,8 @@ def super_admin_user_edit(user_id):
     - Activity log section
     """
     db = current_app.mongo_db
+    scope = _user_password_management_scope(db)
+    is_state_admin = session.get("role") == "ADMIN"
 
     if not user_id or not ObjectId.is_valid(user_id):
         flash("Invalid user.", "danger")
@@ -1476,7 +1548,7 @@ def super_admin_user_edit(user_id):
 
     user_obj_id = ObjectId(user_id)
     user = db.users.find_one(
-        {"_id": user_obj_id},
+        {"_id": user_obj_id, **scope},
         {
             "username": 1,
             "role": 1,
@@ -1499,10 +1571,17 @@ def super_admin_user_edit(user_id):
     )
 
     if not user:
+        if is_state_admin:
+            abort(403)  # No target details leaked for unauthorized user IDs.
         flash("User not found.", "danger")
         return redirect(url_for("auth.super_admin_password_reset"))
 
     if request.method == "POST":
+        # Check authorization BEFORE the exception-handler that flashes errors.
+        _verify_state_password_csrf()
+        if is_state_admin and request.form.get("action") != "reset_password":
+            abort(403)  # State Admin cannot enable or disable user accounts.
+
         try:
             action = (request.form.get("action") or "").strip()
 
@@ -1522,8 +1601,8 @@ def super_admin_user_edit(user_id):
                 if user.get("password_hash") and verify_password(new_password, user.get("password_hash")):
                     raise ValueError("New password cannot be the same as the current password.")
 
-                db.users.update_one(
-                    {"_id": user_obj_id},
+                result = db.users.update_one(
+                    {"_id": user_obj_id, **scope},
                     {"$set": {
                         "password_hash": hash_password(new_password),
                         "password_reset_at": datetime.utcnow(),
@@ -1531,6 +1610,9 @@ def super_admin_user_edit(user_id):
                         "updated_at": datetime.utcnow(),
                     }}
                 )
+
+                if not result.matched_count:
+                    raise ValueError("User is no longer available within your permitted scope.")
 
                 flash("Password reset successfully.", "success")
                 return redirect(url_for("auth.super_admin_user_edit", user_id=user_id))
@@ -1623,7 +1705,9 @@ def super_admin_user_edit(user_id):
         "user_edit.html",
         user=user,
         user_summary_fields=user_summary_fields,
-        activity_logs=activity_logs
+        activity_logs=activity_logs,
+        password_reset_csrf_token=_state_password_csrf_token(),
+        is_state_admin=is_state_admin,
     )
 
 
