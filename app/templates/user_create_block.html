@@ -281,15 +281,15 @@
         </svg>
       </a>
 
-      <h2 class="cca-title">Create CLF Admin</h2>
-      <div class="cca-subtitle">Create a CLF-level admin account and map it to an existing CLF</div>
+      <h2 class="cca-title">Create Block Admin</h2>
+      <div class="cca-subtitle">Create a Block admin account and map it to an existing Block</div>
     </div>
 
     <div class="cca-section">
       <div class="cca-card">
         <div class="cca-card-head">
-          <h3 class="cca-card-title">CLF Admin Details</h3>
-          <p class="cca-card-sub">Enter the login details and assign the admin to a CLF from Master Data.</p>
+          <h3 class="cca-card-title">Block Admin Details</h3>
+          <p class="cca-card-sub">Enter the login details and assign the admin to a Block from Master Data.</p>
         </div>
 
         <div class="cca-card-body">
@@ -305,17 +305,17 @@
             </div>
 
             <div class="cca-col-4 cca-field">
-              <label class="cca-label">CLF</label>
+              <label class="cca-label">Block</label>
               <select name="block_id" class="cca-select" required>
                 {% for b in blocks %}
                   <option value="{{ b._id|string }}">{{ b.name }}</option>
                 {% endfor %}
               </select>
-              <div class="cca-help">CLFs must exist in Master Data.</div>
+              <div class="cca-help">Blocks must exist in Master Data.</div>
             </div>
 
             <div class="cca-col-12 cca-field" style="justify-content:end;">
-              <button class="cca-btn" type="submit">Create CLF Admin</button>
+              <button class="cca-btn" type="submit">Create Block Admin</button>
             </div>
           </form>
         </div>
