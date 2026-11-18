@@ -1,4 +1,5 @@
-﻿from services.audit_engine import AuditLogger
+from services.audit_engine import AuditLogger
+from app.services.activity_log import record_event
 from flask import render_template, request, redirect, url_for, flash, current_app, session, jsonify
 from bson import ObjectId
 from datetime import datetime
@@ -187,6 +188,12 @@ def _create_user(db, data, creator_role):
     }
 
     result = db.users.insert_one(user_doc)
+    try:
+        record_event(db, action="user_created", title="Created user account",
+                     category="users", severity="important", entity="users",
+                     entity_id=result.inserted_id, detail="Role: " + str(data.get("role") or ""))
+    except Exception:
+        current_app.logger.exception("User creation activity audit failed")
     return result.inserted_id
 
 

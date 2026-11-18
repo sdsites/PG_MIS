@@ -1,7 +1,7 @@
 from services.audit_engine import AuditLogger
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify, send_file, abort, g
 from bson import ObjectId
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,timezone
 import jwt
 import os
 import secrets
@@ -11,6 +11,7 @@ from ..utils import verify_password, hash_password, json_safe
 from ..rbac import login_required, roles_required
 from ..rbac import permissions_required
 from ..permissions import P_NOTIFICATIONS_VIEW
+from ..services.activity_log import record_event, record_failed_login
 from ..constants import ROLES
 
 
@@ -116,6 +117,22 @@ def _set_login_session(user):
     session["assigned_pg_ids"] = _serialize_assigned_pg_ids(user.get("assigned_pg_ids"))
 
 
+def _safe_record_activity(db, **kwargs):
+    """Audit failures are reported to server logs without duplicating writes."""
+    try:
+        return record_event(db, **kwargs)
+    except Exception:
+        current_app.logger.exception("Security/activity audit write failed")
+        return None
+
+
+def _safe_failed_login(db, user):
+    try:
+        record_failed_login(db, user)
+    except Exception:
+        current_app.logger.exception("Failed-login security audit write failed")
+
+
 def _jwt_payload_for_user(user):
     """Build mobile JWT payload for all roles including CLF_ADMIN."""
     return {
@@ -214,6 +231,7 @@ def login():
         user = db.users.find_one({"username": username})
 
         if not user or not verify_password(password, user.get("password_hash", "")):
+            _safe_failed_login(db, user)
             return jsonify({"error": "Invalid username or password"}), 401
 
         if not _active_status_ok(user):
@@ -224,6 +242,8 @@ def login():
             {"$set": {"last_login": datetime.utcnow()}}
         )
 
+        _safe_record_activity(db, action="login_success", title="Signed in via mobile/API",
+                              category="authentication", severity="normal", actor=user)
         payload = _jwt_payload_for_user(user)
 
         token = jwt.encode(
@@ -248,6 +268,7 @@ def login():
         user = db.users.find_one({"username": username})
 
         if not user or not verify_password(password, user.get("password_hash", "")):
+            _safe_failed_login(db, user)
             flash("Invalid username or password.", "danger")
             return render_template("login.html")
 
@@ -262,6 +283,8 @@ def login():
             {"$set": {"last_login": datetime.utcnow()}}
         )
 
+        _safe_record_activity(db, action="login_success", title="Signed in to PG MIS",
+                              category="authentication", severity="normal", actor=user)
         flash("Logged in successfully.", "success")
         return _redirect_after_login(user.get("role"))
 
@@ -274,6 +297,8 @@ def login():
 @auth_bp.route("/logout")
 @login_required
 def logout():
+    _safe_record_activity(current_app.mongo_db, action="logout", title="Signed out of PG MIS",
+                          category="authentication", severity="normal")
     session.clear()
     flash("Logged out.", "info")
     return redirect(url_for("auth.login"))
@@ -519,7 +544,11 @@ def _create_user(data, creator_role):
         "created_by": creator_role,
         "last_login": None,
     }
-    db.users.insert_one(user_doc)
+    result = db.users.insert_one(user_doc)
+    _safe_record_activity(db, action="user_created", title="Created user account",
+                          category="users", severity="important",
+                          entity="users", entity_id=result.inserted_id,
+                          detail="Role: " + str(data.get("role") or ""))
 
 
 @auth_bp.route("/users/create/admin", methods=["GET", "POST"])
@@ -1420,7 +1449,7 @@ def _user_password_management_scope(db):
 
 def _state_password_csrf_token():
     """Create a per-session CSRF token for State Admin password reset forms."""
-    if session.get("role") == "ADMIN":
+    if session.get("role") in ("SUPER_ADMIN", "ADMIN"):
         if not session.get("_state_password_csrf"):
             session["_state_password_csrf"] = secrets.token_urlsafe(32)
         return session["_state_password_csrf"]
@@ -1428,7 +1457,7 @@ def _state_password_csrf_token():
 
 
 def _verify_state_password_csrf():
-    if session.get("role") != "ADMIN":
+    if session.get("role") not in ("SUPER_ADMIN", "ADMIN"):
         return
     expected = session.get("_state_password_csrf")
     provided = request.form.get("csrf_token", "")
@@ -1459,6 +1488,7 @@ def super_admin_password_reset():
 
     # Keep backward compatibility: if any old form still posts here, reset password safely.
     if request.method == "POST":
+        _verify_state_password_csrf()
         try:
             user_id = request.form.get("user_id")
             new_password = request.form.get("new_password", "")
@@ -1483,6 +1513,8 @@ def super_admin_password_reset():
             if res.matched_count == 0:
                 raise ValueError("User not found.")
 
+            _safe_record_activity(db, action="password_reset", title="Reset user password",
+                                  category="security", severity="critical", entity="users", entity_id=user_id)
             flash("Password reset successfully.", "success")
             return redirect(url_for("auth.super_admin_password_reset", user_id=user_id))
 
@@ -1614,6 +1646,8 @@ def super_admin_user_edit(user_id):
                 if not result.matched_count:
                     raise ValueError("User is no longer available within your permitted scope.")
 
+                _safe_record_activity(db, action="password_reset", title="Reset user password",
+                                      category="security", severity="critical", entity="users", entity_id=user_id)
                 flash("Password reset successfully.", "success")
                 return redirect(url_for("auth.super_admin_user_edit", user_id=user_id))
 
@@ -1631,6 +1665,9 @@ def super_admin_user_edit(user_id):
                     }}
                 )
 
+                _safe_record_activity(db, action="user_status_changed", title="Changed user account status",
+                                      category="security", severity="critical", entity="users", entity_id=user_id,
+                                      changes=[{"field": "status", "before": current_status, "after": new_status}])
                 flash(f"User status changed to {new_status}.", "success")
                 return redirect(url_for("auth.super_admin_user_edit", user_id=user_id))
 
@@ -1698,8 +1735,14 @@ def super_admin_user_edit(user_id):
                 "type": "text",
             })
 
-    # Placeholder for now. Later we can connect this with real audit/activity collection.
+    from app.activity.routes import user_preview, IST
+    recent = user_preview(db, user_id, limit=8)
     activity_logs = []
+    for event in recent:
+        ts = event.get("ts")
+        date_label = (ts.replace(tzinfo=timezone.utc).astimezone(IST).strftime("%d %b %Y, %I:%M %p IST")) if isinstance(ts, datetime) else "-"
+        activity_logs.append({"title": event.get("title"), "created_at": date_label,
+                              "details": event.get("detail") or event.get("entity") or ""})
 
     return render_template(
         "user_edit.html",

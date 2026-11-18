@@ -1,4 +1,5 @@
 from flask import Flask, session
+import os
 from pymongo import MongoClient, ASCENDING
 from pymongo.errors import OperationFailure
 from .config import Config
@@ -26,7 +27,10 @@ def create_app():
     CORS(app, supports_credentials=True)
 
     app.config.from_object(Config)
-    app.config["JWT_SECRET_KEY"] = "change-this-to-strong-secret-key"
+    # An environment override enables secure rotation without code changes.
+    # Keep the legacy default only to avoid silently breaking existing mobile
+    # sessions on deployment. Production MUST configure JWT_SECRET_KEY.
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") or "change-this-to-strong-secret-key"
     app.config["JWT_EXPIRATION_SECONDS"] = 86400  # 1 day
 
     global mongo_client
@@ -42,6 +46,7 @@ def create_app():
     from .finance.routes import finance_bp
     from .business.routes import business_bp
     from .reports.routes import reports_bp
+    from .activity.routes import activity_bp
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(master_data_bp, url_prefix="/master")
@@ -49,6 +54,11 @@ def create_app():
     app.register_blueprint(finance_bp, url_prefix="/finance")
     app.register_blueprint(business_bp, url_prefix="/business")
     app.register_blueprint(reports_bp, url_prefix="/reports")
+    app.register_blueprint(activity_bp, url_prefix="/activity")
+
+    # Read-only audit dashboard and privacy-safe write request tracking.
+    from .services.activity_log import initialize_capture
+    initialize_capture(app)
 
     # ------------------------------------------------------------
     # CLF Blueprint
@@ -264,6 +274,12 @@ def init_indexes(db):
     db.pg_income_expenditure.create_index([("pg_id", ASCENDING), ("year", ASCENDING), ("month", ASCENDING)])
     db.mpr_snapshots.create_index([("level", ASCENDING), ("ref_id", ASCENDING), ("year", ASCENDING), ("month", ASCENDING)])
     db.audit_logs.create_index([("collection", ASCENDING), ("doc_id", ASCENDING)])
+    db.audit_logs.create_index([("user.user_id", ASCENDING), ("ts", -1)])
+    db.audit_logs.create_index([("ts", -1)])
+    db.activity_events.create_index([("actor_id", ASCENDING), ("ts", -1)])
+    db.activity_events.create_index([("severity", ASCENDING), ("ts", -1)])
+    db.activity_events.create_index([("category", ASCENDING), ("ts", -1)])
+    db.activity_events.create_index([("ts", -1)])
 
     # ------------------------------------------------------------
     # Workflow / counters / notifications / change requests / documents

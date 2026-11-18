@@ -1348,6 +1348,18 @@ transition:none !important;
           {% if session.get('role') in ['SUPER_ADMIN','ADMIN','DISTRICT_ADMIN','BLOCK_ADMIN'] %}
           <div class="nav-section">User Management</div>
           <ul class="nav-item-group">
+            {% if session.get('role') in ['SUPER_ADMIN', 'ADMIN'] %}
+            <li>
+              <a class="nav-item{% if request.endpoint in ['activity.dashboard','activity.export'] %} active{% endif %}"
+                 data-page="activity-log" href="{{ url_for('activity.dashboard') }}" title="Activity Log">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 6h16M4 12h16M4 18h12"/><circle cx="19" cy="18" r="2"/>
+                </svg>
+                <span class="nav-text">Activity Log</span>
+              </a>
+            </li>
+            {% endif %}
             {% if session.get('role') == 'SUPER_ADMIN' %}
             <li>
               <a class="nav-item" data-page="create-state-admin" href="{{ url_for('auth.create_state_admin') }}">

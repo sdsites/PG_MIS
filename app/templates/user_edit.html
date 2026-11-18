@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Edit User{% endblock %}
 
@@ -575,7 +575,7 @@
           <div class="ued-card-body">
             <form method="post" class="ued-form">
               <input type="hidden" name="action" value="reset_password">
-              {% if is_state_admin %}<input type="hidden" name="csrf_token" value="{{ password_reset_csrf_token }}">{% endif %}
+              <input type="hidden" name="csrf_token" value="{{ password_reset_csrf_token }}">
 
              <div>
   <label class="ued-label">New Password</label>
@@ -659,6 +659,7 @@
 
               <form method="post">
                 <input type="hidden" name="action" value="toggle_status">
+                <input type="hidden" name="csrf_token" value="{{ password_reset_csrf_token }}">
 
                 {% if (user.status or 'active') == 'active' %}
                   <button type="submit" class="ued-btn danger full">Disable User</button>
@@ -677,6 +678,7 @@
           <div class="ued-card-head">
             <div>
               <h3 class="ued-card-title">Activity Log</h3>
+              <a href="{{ url_for('activity.dashboard', tab='users', user_id=user._id, period='all') }}" style="font-size:13px;color:#0b4d3a;font-weight:800;text-decoration:none;">View full history →</a>
               
             </div>
           </div>
@@ -693,7 +695,7 @@
               </div>
             {% else %}
               <div class="ued-log-empty">
-                No activity log connected yet. Later, we can display login history, password reset history, enable/disable history, user edits, and other audit actions here.
+                No recorded activity for this user yet. Important new actions will appear here automatically.
               </div>
             {% endif %}
           </div>

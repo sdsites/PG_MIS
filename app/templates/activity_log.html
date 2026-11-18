@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block title %}Activity Log · PG MIS{% endblock %}
+{% block head_extra %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/activity_log.css') }}">
+{% endblock %}
+
+{% macro activity_cards(rows) %}
+  {% if rows %}
+    <div class="al-timeline">
+      {% for event in rows %}
+      <article class="al-event al-priority-{{ event.severity }}">
+        <div class="al-event-dot" aria-hidden="true">
+          {% if event.severity == 'critical' %}!{% elif event.category == 'approvals' %}✓{% else %}•{% endif %}
+        </div>
+        <div class="al-event-main">
+          <div class="al-event-top">
+            <div class="al-event-title">{{ event.title }}</div>
+            <div class="al-event-time" title="India Standard Time">{{ ist_time(event.ts) }}</div>
+          </div>
+          <div class="al-event-subline">
+            <span class="al-person">{{ event.actor_name }}</span>
+            {% if event.actor_role %}<span>{{ role_labels.get(event.actor_role, event.actor_role) }}</span>{% endif %}
+            <span class="al-badge al-badge-{{ event.severity }}">{{ event.severity|capitalize }}</span>
+          </div>
+          <div class="al-event-summary">
+            <span>{{ categories.get(event.category, event.category|capitalize) }}</span>
+            {% if event.entity %}<span>{{ event.entity|replace('_', ' ')|title }}</span>{% endif %}
+            {% if event.entity_id %}<span class="al-record">Record: {{ event.entity_id }}</span>{% endif %}
+          </div>
+          <details class="al-details">
+            <summary>View activity details <span aria-hidden="true">⌄</span></summary>
+            <div class="al-detail-body">
+              <div><strong>Action</strong><span>{{ event.action }}</span></div>
+              <div><strong>Time</strong><span>{{ ist_time(event.ts) }}</span></div>
+              <div><strong>Result</strong><span>{{ event.result }}</span></div>
+              <div><strong>Source</strong><span>{{ 'Existing audit history' if event.source == 'legacy' else 'Activity monitoring' }}</span></div>
+              {% if event.detail %}<div><strong>Details</strong><span>{{ event.detail }}</span></div>{% endif %}
+              {% if event.ip %}<div><strong>Source IP</strong><span>{{ event.ip }}</span></div>{% endif %}
+              {% if event.changes %}
+              <div class="al-diff">
+                <strong>Recorded field changes</strong>
+                <div class="al-diff-grid">
+                  {% for change in event.changes %}
+                  <div class="al-diff-line">
+                    <div class="al-diff-label">{{ change.field|replace('_', ' ')|title }}</div>
+                    <div class="al-diff-values"><span>{{ change.before }}</span><span class="al-arrow">→</span><span>{{ change.after }}</span></div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </details>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="al-empty">
+      <div class="al-empty-icon">○</div>
+      <strong>No activity found</strong>
+      <p>There are no recorded events matching the current filters. You can broaden the date range or reset the filters.</p>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% block content %}
+<div class="al-wrap">
+  <div class="al-header">
+    <div>
+      <div class="al-eyebrow">ADMINISTRATION <span>/</span> ACTIVITY MONITORING</div>
+      <h1>Activity Log</h1>
+      <p>Review significant actions, monitor users and investigate critical changes.</p>
+    </div>
+    <a class="al-export" href="{{ export_url() }}" title="Download up to 5,000 matching activities as Excel">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 16v4h14v-4"/></svg>
+      Export Excel
+    </a>
+  </div>
+  <div class="al-stat-grid" aria-label="Activity overview">
+    <div class="al-stat"><div class="al-stat-label">Authorized users</div><div class="al-stat-value">{{ user_count }}</div><div class="al-stat-sub">Within your access scope</div></div>
+    <div class="al-stat"><div class="al-stat-label">Users logged in</div><div class="al-stat-value">{{ active_login_count }}</div><div class="al-stat-sub">During the selected period</div></div>
+    <div class="al-stat"><div class="al-stat-label">{{ 'Filtered users' if filters.tab == 'users' else 'Matching activities' }}</div><div class="al-stat-value">{{ current_count }}</div><div class="al-stat-sub">{{ 'Users matching these filters' if filters.tab == 'users' else 'Across available audit records' }}</div></div>
+    <div class="al-stat al-stat-security"><div class="al-stat-label">{{ 'User history' if filters.tab == 'users' else 'Critical events' }}</div><div class="al-stat-value">{{ 'Individual' if filters.tab == 'users' else critical_count }}</div><div class="al-stat-sub">{{ 'Select a user to view events' if filters.tab == 'users' else 'Prioritized for attention' }}</div></div>
+  </div>
+  <div class="al-panel">
+    <nav class="al-tabs" aria-label="Activity log sections">
+      <a href="{{ query_url(tab='all',page=1) }}" {% if filters.tab == 'all' %}class="active" aria-current="page"{% endif %}><span class="al-tab-icon">≡</span>All Activity</a>
+      <a href="{{ query_url(tab='users',page=1) }}" {% if filters.tab == 'users' %}class="active" aria-current="page"{% endif %}><span class="al-tab-icon">♙</span>Users</a>
+      <a href="{{ query_url(tab='critical',page=1) }}" {% if filters.tab == 'critical' %}class="active" aria-current="page"{% endif %}><span class="al-tab-icon">◇</span>Critical Events</a>
+    </nav>
+    <div class="al-filter-area">
+      <form action="{{ url_for('activity.dashboard') }}" method="GET" class="al-filter-form">
+        <input type="hidden" name="tab" value="{{ filters.tab }}">
+        <label class="al-filter-search">
+          <span>{{ 'Search users' if filters.tab == 'users' else 'Search activities' }}</span>
+          <input type="search" name="search" value="{{ filters.search }}" maxlength="75" placeholder="{{ 'Name, username or role' if filters.tab == 'users' else 'User, action or record ID' }}">
+        </label>
+        <label><span>User type</span>
+          <select name="role">
+            <option value="">All user types</option>
+            {% for role, label in role_labels.items() %}
+              <option value="{{ role }}" {% if filters.role == role %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label><span>District</span>
+          <select name="district"><option value="">All districts</option>
+          {% for d in district_options %}<option value="{{ d.id }}" {% if filters.district == d.id %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+          </select>
+        </label>
+        <label><span>Block</span>
+          <select name="block"><option value="">All blocks</option>
+          {% for b in block_options %}<option value="{{ b.id }}" {% if filters.block == b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+          </select>
+        </label>
+        {% if filters.tab == 'users' %}
+        <label><span>Account status</span><select name="status">
+          <option value="">All statuses</option>
+          {% for status in ['active','pending','disabled','rejected'] %}<option value="{{ status }}" {% if filters.status == status %}selected{% endif %}>{{ status|capitalize }}</option>{% endfor %}
+        </select></label>
+        {% else %}
+        <label><span>Activity category</span><select name="category">
+          <option value="">All categories</option>
+          {% for key, label in categories.items() %}<option value="{{ key }}" {% if filters.category == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select></label>
+        {% endif %}
+        <label><span>Date range</span><select name="period" id="al-period">
+          {% for value, label in [('today','Today'),('yesterday','Yesterday'),('7d','Last 7 days'),('30d','Last 30 days'),('all','All time'),('custom','Custom dates')] %}
+          <option value="{{ value }}" {% if filters.period == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select></label>
+        <div class="al-custom-date" id="al-custom" {% if filters.period != 'custom' %}hidden{% endif %}>
+          <label><span>From (IST)</span><input type="date" name="from" value="{{ filters['from'] }}"></label>
+          <label><span>To (IST)</span><input type="date" name="to" value="{{ filters['to'] }}"></label>
+        </div>
+        <div class="al-filter-buttons">
+          <button type="submit" class="al-apply">Apply filters</button>
+          <a class="al-clear" href="{{ url_for('activity.dashboard', tab=filters.tab) }}">Reset</a>
+        </div>
+      </form>
+    </div>
+    {% if filters.tab == 'users' %}
+      <div class="al-section-heading"><div><h2>User directory</h2><p>{{ current_count }} matching accounts · Open a profile to review its timeline</p></div></div>
+      {% if selected %}
+        <section class="al-selected" aria-label="Selected user activity">
+          <div class="al-selected-head">
+            <div><div class="al-selected-kicker">INDIVIDUAL ACTIVITY TIMELINE</div><h2>{{ selected.full_name or selected.name or selected.username }}</h2>
+              <p>{{ selected.username }} · {{ role_labels.get(selected.role, selected.role) }} · {{ selected_total }} recorded actions</p></div>
+            <a href="{{ query_url(tab='users',page=1,user_id='') }}" class="al-clear">Close timeline</a>
+          </div>
+          {{ activity_cards(selected_events) }}
+          {% if history_pages > 1 %}
+          <nav class="al-pagination" aria-label="Individual user activity pages">
+            <span>History page {{ filters.history_page }} of {{ history_pages }}</span>
+            <div>
+              {% if filters.history_page > 1 %}<a href="{{ query_url(tab='users',user_id=selected._id,history_page=filters.history_page-1) }}#al-user-timeline">← Previous</a>{% endif %}
+              {% if filters.history_page < history_pages %}<a href="{{ query_url(tab='users',user_id=selected._id,history_page=filters.history_page+1) }}#al-user-timeline">Next →</a>{% endif %}
+            </div>
+          </nav>
+          {% endif %}
+        </section>
+      {% endif %}
+      {% if users %}
+      <div class="al-table-scroll"><table class="al-users-table">
+        <thead><tr><th>User</th><th>User type</th><th>Status</th><th>Last login</th><th>Recorded actions</th><th></th></tr></thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td><div class="al-user-cell"><div class="al-avatar">{{ user.name[0]|upper }}</div><div><strong>{{ user.name }}</strong><small>{{ user.username }}</small></div></div></td>
+            <td>{{ user.role_label }}</td>
+            <td><span class="al-status {% if user.status == 'active' %}on{% endif %}">{{ user.status|capitalize }}</span></td>
+            <td>{{ ist_time(user.last_login) if user.last_login else 'Never / not recorded' }}</td>
+            <td><strong>{{ user.actions }}</strong></td>
+            <td><a class="al-view" href="{{ query_url(tab='users',user_id=user.id,page=1,history_page=1) }}#al-user-timeline">View activity →</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table></div>
+      {% else %}<div class="al-empty"><strong>No users match</strong><p>Change the user type, status or location filter.</p></div>{% endif %}
+    {% else %}
+      <div class="al-section-heading"><div><h2>{{ 'Critical events' if filters.tab == 'critical' else 'Recent activity' }}</h2><p>{{ current_count }} events match your filters. Times displayed in IST.</p></div></div>
+      {{ activity_cards(events) }}
+    {% endif %}
+    {% if page_count > 1 %}
+    <nav class="al-pagination" aria-label="Activity pagination">
+      <span>Page {{ page }} of {{ page_count }}</span>
+      <div>
+        {% if page > 1 %}<a href="{{ query_url(page=page-1) }}">← Previous</a>{% endif %}
+        {% if page < page_count %}<a href="{{ query_url(page=page+1) }}">Next →</a>{% endif %}
+      </div>
+    </nav>
+    {% endif %}
+  </div>
+  <div class="al-footnote"><span>🔒</span><p><strong>Audit integrity:</strong> This page is read-only. Sensitive data is redacted, and administrators can view only their permitted users. Older actions not previously logged cannot be reconstructed.</p></div>
+</div>
+{% endblock %}
+{% block scripts %}
+  {{ super() }}
+  <script>
+  (function(){
+    const picker=document.getElementById('al-period'), custom=document.getElementById('al-custom');
+    if(picker&&custom){
+      picker.addEventListener('change',()=>{custom.hidden=picker.value!=='custom';});
+    }
+    if(location.hash==='#al-user-timeline'){
+      const panel=document.querySelector('.al-selected');if(panel){panel.id='al-user-timeline';panel.scrollIntoView({block:'start'});}
+    }
+  })();
+  </script>
+{% endblock %}
